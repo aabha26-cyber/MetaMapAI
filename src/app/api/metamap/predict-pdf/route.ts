@@ -4,10 +4,15 @@ import { scoreTextDocument } from "@/lib/metamap/analysis";
 
 async function extractPdfText(buffer: Buffer) {
   try {
-    const pdfModule = await import("pdf-parse");
-    const pdfParse = pdfModule.default;
-    const parsed = await pdfParse(buffer);
-    return parsed.text ?? "";
+    const { PDFParse } = await import("pdf-parse");
+    const parser = new PDFParse({ data: buffer });
+
+    try {
+      const parsed = await parser.getText();
+      return parsed.text ?? "";
+    } finally {
+      await parser.destroy();
+    }
   } catch (error) {
     console.error("PDF parsing fallback triggered", error);
     return "";

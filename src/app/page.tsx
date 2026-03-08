@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { SiteHeader } from "@/components/site-header";
+import { PageShell } from "@/components/page-shell";
 
 const workflowSteps = [
   {
@@ -29,10 +29,8 @@ const featureCards = [
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-grid">
-      <SiteHeader />
-
-      <main className="mx-auto flex max-w-6xl flex-col gap-10 px-4 py-12 sm:px-6 lg:px-8">
+    <PageShell maxWidthClassName="max-w-6xl">
+      <div className="grid gap-10">
         <section className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
           <div className="space-y-6">
             <span className="inline-flex rounded-full border border-[var(--border-accent)] bg-[var(--accent-soft)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-[var(--accent)]">
@@ -110,7 +108,7 @@ export default function Home() {
             ))}
           </div>
         </section>
-      </main>
-    </div>
+      </div>
+    </PageShell>
   );
 }

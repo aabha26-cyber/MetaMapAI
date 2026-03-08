@@ -13,7 +13,7 @@ export function SiteHeader() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-20 border-b border-[var(--border-subtle)] bg-[rgba(6,6,10,0.82)] backdrop-blur-xl">
+    <header className="border-b border-[var(--border-subtle)] bg-[rgba(6,6,10,0.94)]">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[var(--border-accent)] bg-[var(--accent-soft)] text-sm font-semibold text-[var(--accent)]">

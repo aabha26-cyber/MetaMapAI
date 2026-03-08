@@ -2,20 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import {
-  Bar,
-  BarChart,
-  Cell,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
 
+import {
+  FeatureMetricsChart,
+  OrganFocusChart,
+} from "@/components/analysis-charts";
+import { PageShell } from "@/components/page-shell";
 import { RiskBadge } from "@/components/risk-badge";
-import { SiteHeader } from "@/components/site-header";
 import type { AnalysisResult, CarePlan } from "@/lib/metamap/types";
 import {
   ANALYSIS_STORAGE_KEY,
@@ -292,10 +285,8 @@ export default function MetaMapPage() {
   }
 
   return (
-    <div className="min-h-screen bg-grid">
-      <SiteHeader />
-
-      <main className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-12 sm:px-6 lg:px-8">
+    <PageShell maxWidthClassName="max-w-6xl">
+      <div className="grid gap-8">
         <section className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
           <div className="card-premium p-6">
             <div className="section-title">Step 2 of 3</div>
@@ -493,9 +484,9 @@ export default function MetaMapPage() {
                 </p>
 
                 <div className="mt-6 flex flex-wrap gap-2">
-                  {analysisResult.predictedOrgans.map((organ) => (
+                  {analysisResult.predictedOrgans.map((organ, index) => (
                     <span
-                      key={organ}
+                      key={`${organ}-${index}`}
                       className="rounded-full border border-[var(--border-subtle)] bg-[rgba(255,255,255,0.03)] px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--text-primary)]"
                     >
                       {organ}
@@ -507,8 +498,8 @@ export default function MetaMapPage() {
               <div className="card-premium p-6">
                 <div className="section-title">Findings</div>
                 <ul className="space-y-3 text-sm leading-7 text-[var(--text-secondary)]">
-                  {analysisResult.findings.map((finding) => (
-                    <li key={finding}>{finding}</li>
+                  {analysisResult.findings.map((finding, index) => (
+                    <li key={`${finding}-${index}`}>{finding}</li>
                   ))}
                 </ul>
               </div>
@@ -528,8 +519,8 @@ export default function MetaMapPage() {
                         Patient actions
                       </div>
                       <ul className="mt-2 space-y-2">
-                        {carePlan.patientActions.map((action) => (
-                          <li key={action}>{action}</li>
+                        {carePlan.patientActions.map((action, index) => (
+                          <li key={`${action}-${index}`}>{action}</li>
                         ))}
                       </ul>
                     </div>
@@ -538,8 +529,8 @@ export default function MetaMapPage() {
                         Clinician actions
                       </div>
                       <ul className="mt-2 space-y-2">
-                        {carePlan.clinicianActions.map((action) => (
-                          <li key={action}>{action}</li>
+                        {carePlan.clinicianActions.map((action, index) => (
+                          <li key={`${action}-${index}`}>{action}</li>
                         ))}
                       </ul>
                     </div>
@@ -549,44 +540,20 @@ export default function MetaMapPage() {
             </div>
 
             <div className="space-y-6">
-              <div className="card-premium p-6">
+              <div className="card-premium chart-card p-6">
                 <div className="section-title">Feature metrics</div>
-                <div className="h-72">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={analysisResult.metrics}>
-                      <XAxis dataKey="label" stroke="#9ca3af" tick={{ fontSize: 12 }} />
-                      <YAxis stroke="#9ca3af" tick={{ fontSize: 12 }} />
-                      <Tooltip />
-                      <Bar dataKey="value" radius={[6, 6, 0, 0]} fill="#d4af37" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
+                <FeatureMetricsChart metrics={analysisResult.metrics} />
               </div>
 
-              <div className="card-premium p-6">
+              <div className="card-premium chart-card p-6">
                 <div className="section-title">Predicted organ focus</div>
-                <div className="h-72">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={organChartData}
-                        dataKey="value"
-                        nameKey="name"
-                        innerRadius={58}
-                        outerRadius={96}
-                        paddingAngle={3}
-                      >
-                        {organChartData.map((entry) => (
-                          <Cell key={entry.name} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
+                <OrganFocusChart data={organChartData} />
                 <div className="mt-4 flex flex-wrap gap-3">
-                  {organChartData.map((entry) => (
-                    <div key={entry.name} className="flex items-center gap-2 text-xs text-[var(--text-secondary)]">
+                  {organChartData.map((entry, index) => (
+                    <div
+                      key={`${entry.name}-${index}`}
+                      className="flex items-center gap-2 text-xs text-[var(--text-secondary)]"
+                    >
                       <span
                         className="h-3 w-3 rounded-full"
                         style={{ backgroundColor: entry.color }}
@@ -635,7 +602,7 @@ export default function MetaMapPage() {
             predicted organs, care plan, PDF report action, and email flow.
           </section>
         )}
-      </main>
-    </div>
+      </div>
+    </PageShell>
   );
 }

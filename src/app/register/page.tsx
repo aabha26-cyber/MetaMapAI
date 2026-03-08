@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import { SiteHeader } from "@/components/site-header";
+import { PageShell } from "@/components/page-shell";
 import {
   ANALYSIS_STORAGE_KEY,
   buildPatientProfile,
@@ -65,10 +65,8 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-grid">
-      <SiteHeader />
-
-      <main className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-12 sm:px-6 lg:px-8">
+    <PageShell maxWidthClassName="max-w-5xl">
+      <div className="grid gap-8">
         <section className="grid gap-6 lg:grid-cols-[0.75fr_1.25fr]">
           <div className="card-premium p-6">
             <div className="section-title">Step 1 of 3</div>
@@ -210,7 +208,7 @@ export default function RegisterPage() {
             </div>
           </form>
         </section>
-      </main>
-    </div>
+      </div>
+    </PageShell>
   );
 }
