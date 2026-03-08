@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# OncoSignal
 
-## Getting Started
+**AI that detects early scientific red flags in cancer drug research.**
 
-First, run the development server:
+OncoSignal scans oncology literature from PubMed, extracts structured research signals with an LLM, and computes a **Scientific Fragility Score** to help researchers and investors assess stability of early science in a therapy area.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Quick start
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. **Install dependencies**  
+   `npm install`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+2. **Set your OpenAI API key**  
+   Copy `.env.example` to `.env.local` and add your key:
+   ```bash
+   cp .env.example .env.local
+   # Edit .env.local and set OPENAI_API_KEY=sk-...
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. **Run the app**  
+   `npm run dev`  
+   Open [http://localhost:3000](http://localhost:3000).
 
-## Learn More
+4. **Use it**  
+   Enter a query (e.g. *KRAS inhibitor in colorectal cancer*), click **Analyze**, and review the stability score, outcome distribution, model-type breakdown, and AI summary.
 
-To learn more about Next.js, take a look at the following resources:
+## How it works
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Input:** Drug, mutation, or cancer type (e.g. *PD-1 NSCLC*, *BRAF melanoma*).
+- **PubMed:** Fetches up to 40 relevant abstracts via NCBI E-utilities.
+- **Extraction:** Each abstract is analyzed by the LLM for outcome (positive/negative/mixed), model type (cell line / mouse / human), resistance, subgroup effects, sample size, and confidence.
+- **Scoring:** A fragility score (0–100) is computed from negative study ratio, human validation %, resistance and subgroup flags, and sample size.
+- **Output:** Dashboard with score, risk badge (High / Moderate / Stable), bar chart of outcomes, pie chart of model types, and an AI-generated summary with red flags, strengths, and suggested due-diligence questions.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Tech stack
 
-## Deploy on Vercel
+- **Next.js 16** (App Router), **TypeScript**, **Tailwind CSS**
+- **PubMed** via NCBI E-utilities (no API key)
+- **OpenAI** (gpt-4o-mini) for extraction and summary
+- **Recharts** for visualizations
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## MetaMap AI
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+A second app in this repo. **Main idea:** predict **where** metastasis is spreading—which organ (e.g. liver, lung, bone, brain)—so care teams can target surveillance and treatment earlier.
+
+- **Route:** [http://localhost:3000/metamap](http://localhost:3000/metamap)
+- **Today’s demo:** Benign vs malignant as a foundation (current dataset has no organ/site labels). Organ-level prediction is the product direction and requires datasets with metastasis location.
+- **Data:** Breast Cancer Wisconsin (Diagnostic) from UCI; malignant = higher metastasis risk proxy.
+- **Model:** Random Forest (JavaScript, `ml-random-forest`), 80/20 train–test, standardized features.
+- **Output:** Probability, risk tier (Low / Medium / High), risk drivers, care plan. No Python; dataset is fetched from UCI when you first load the MetaMap page.
+
+## Scripts
+
+- `npm run dev` — development server
+- `npm run build` — production build
+- `npm run start` — run production server
